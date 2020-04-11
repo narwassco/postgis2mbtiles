@@ -1,3 +1,6 @@
+*.geojson
+.vscode/
+
 # Logs
 logs
 *.log
