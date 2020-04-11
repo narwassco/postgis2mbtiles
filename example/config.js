@@ -1,14 +1,14 @@
 module.exports = {
     mapbox:{
-      user:'jin-igarashi',
-      accessToken:'sk.eyJ1IjoiamluLWlnYXJhc2hpIiwiYSI6ImNrOHZscmxsNjAyY3YzZWxia3hoYTJybGIifQ.uWlRVNvG7FG56H4opI0vsw',  
+      user:'Your user',
+      accessToken:'Your token',  
     },
     db: {
         user:'postgres',
-        password:'kkc',
+        password:'Your password',
         host:'localhost',
         post:5432,
-        database:'narwassco',
+        database:'Your database',
     },
     layers : [
         {
