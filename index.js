@@ -1,5 +1,6 @@
 const { Pool } = require('pg')
 const fs = require('fs');
+const https = require('https');
 
 module.exports = class postgis2geojson{
     constructor(config){
@@ -11,6 +12,11 @@ module.exports = class postgis2geojson{
         const client = await this.pool.connect();
         try{
             await this.dump(client);
+            this.getDatasets().then(data=>{
+                console.log(data);
+            }).catch(err=>{
+                console.log(err);
+            });
         }finally{
             client.release();
         }
@@ -51,6 +57,27 @@ module.exports = class postgis2geojson{
             }
         }).catch(err=>{
             console.log(err);
+        });
+    }
+
+    //TODO
+    getDatasets(){
+        return new Promise((resolve, reject) =>{
+            const mapbox = this.config.mapbox;
+            if (!mapbox){
+                reject('No configuration of Mapbox account.')
+            }
+            const url = `https://api.mapbox.com/datasets/v1/${mapbox.user}?access_token=${mapbox.accessToken}`;
+            const req = https.get(url, (res) => {
+                res.on('data', chunk=>{
+                    const data = chunk.toString('utf-8', 0, chunk.length);
+                    resolve(JSON.parse(data));
+                });
+            });
+            req.on('error', err=>{
+                reject(err);
+            })
+            req.end();
         });
     }
 }

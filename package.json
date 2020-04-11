@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/JinIgarashi/postgis2geojson#readme",
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.10.0",
     "fs": "0.0.1-security",
+    "https": "^1.0.0",
     "pg": "^8.0.2"
   }
 }

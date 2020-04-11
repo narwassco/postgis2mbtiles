@@ -1,4 +1,8 @@
 module.exports = {
+    mapbox:{
+      user:'jin-igarashi',
+      accessToken:'sk.eyJ1IjoiamluLWlnYXJhc2hpIiwiYSI6ImNrOHZscmxsNjAyY3YzZWxia3hoYTJybGIifQ.uWlRVNvG7FG56H4opI0vsw',  
+    },
     db: {
         user:'postgres',
         password:'kkc',
