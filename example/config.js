@@ -263,7 +263,7 @@ module.exports = {
           WITH percels AS(
             SELECT 
               plotid as fid, 
-              parcel_no, 
+              CASE WHEN parcel_no = '0' THEN NULL ELSE parcel_no END as parcel_no,  
               geom
             FROM planner_plot
             UNION ALL
