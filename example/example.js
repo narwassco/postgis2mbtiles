@@ -3,7 +3,8 @@ const config = require('./config');
 
 const example = async() =>{
     pg2json = new postgis2geojson(config);
-    await pg2json.run();
+    const result = await pg2json.run();
+    console.log(result);
 };
 
 module.exports = example();

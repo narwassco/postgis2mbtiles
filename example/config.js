@@ -1,14 +1,10 @@
 module.exports = {
-    mapbox:{
-      user:'Your user',
-      accessToken:'Your token',  
-    },
     db: {
         user:'postgres',
-        password:'Your password',
+        password:'kkc',
         host:'localhost',
         post:5432,
-        database:'Your database',
+        database:'narwassco',
     },
     layers : [
         {
@@ -255,6 +251,44 @@ module.exports = {
                 ) AS p
               )) AS properties
               FROM intake x
+              WHERE NOT ST_IsEmpty(x.geom)
+            ) AS feature
+          ) AS featurecollection
+          `
+        },
+        {
+          name: 'parcels',
+          geojsonFileName: __dirname + '/parcels.geojson',
+          select:`
+          WITH percels AS(
+            SELECT 
+              plotid as fid, 
+              parcel_no, 
+              geom
+            FROM planner_plot
+            UNION ALL
+            SELECT 
+              gid as fid, 
+              plotno as parcel_no, 
+              geom
+            FROM basemap_plots
+          )
+          SELECT row_to_json(featurecollection) AS json FROM (
+            SELECT
+              'FeatureCollection' AS type,
+              array_to_json(array_agg(feature)) AS features
+            FROM (
+              SELECT
+              'Feature' AS type,
+              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT p FROM (
+                SELECT
+                  x.fid,
+                  x.parcel_no
+                ) AS p
+              )) AS properties
+              FROM percels x
               WHERE NOT ST_IsEmpty(x.geom)
             ) AS feature
           ) AS featurecollection
