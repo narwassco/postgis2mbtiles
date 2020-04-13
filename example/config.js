@@ -1,7 +1,7 @@
 module.exports = {
     db: {
         user:'postgres',
-        password:'kkc',
+        password:'Your password',
         host:'localhost',
         post:5432,
         database:'narwassco',
