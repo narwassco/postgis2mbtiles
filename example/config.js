@@ -293,6 +293,35 @@ module.exports = {
             ) AS feature
           ) AS featurecollection
           `
+        },
+        {
+          name: 'village',
+          geojsonFileName: __dirname + '/village.geojson',
+          select:`
+          SELECT row_to_json(featurecollection) AS json FROM (
+            SELECT
+              'FeatureCollection' AS type,
+              array_to_json(array_agg(feature)) AS features
+            FROM (
+              SELECT
+              'Feature' AS type,
+              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT p FROM (
+                SELECT
+                  x.villageid as fid,
+                  x.name,
+                  x.area,
+                  x.zone,
+                  x.insertdate,
+                  x.updatedate
+                ) AS p
+              )) AS properties
+              FROM village x
+              WHERE NOT ST_IsEmpty(x.geom)
+            ) AS feature
+          ) AS featurecollection
+          `
         }
     ],
 };
