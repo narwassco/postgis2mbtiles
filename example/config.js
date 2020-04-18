@@ -322,6 +322,61 @@ module.exports = {
             ) AS feature
           ) AS featurecollection
           `
+        },
+        {
+          name: 'point_annotation',
+          geojsonFileName: __dirname + '/point_annotation.geojson',
+          select:`
+          WITH annotations AS(
+            SELECT 
+              tankid as masterid, 
+              name,
+              'tank' as layer,
+              ST_CENTROID(geom) as geom
+            FROM tank
+            UNION ALL
+            SELECT 
+              wtpid as masterid, 
+              name, 
+              'wtp' as layer,
+              ST_CENTROID(geom) as geom
+            FROM wtp
+            UNION ALL
+            SELECT 
+              intakeid as masterid, 
+              name, 
+              'intake' as layer,
+              ST_CENTROID(geom) as geom
+            FROM intake
+            UNION ALL
+            SELECT 
+              villageid as masterid, 
+              name, 
+              'village' as layer,
+              ST_CENTROID(geom) as geom
+            FROM village
+          )
+          SELECT row_to_json(featurecollection) AS json FROM (
+            SELECT
+              'FeatureCollection' AS type,
+              array_to_json(array_agg(feature)) AS features
+            FROM (
+              SELECT
+              'Feature' AS type,
+              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT p FROM (
+                SELECT
+                  x.masterid,
+                  x.name,
+                  x.layer
+                ) AS p
+              )) AS properties
+              FROM annotations x
+              WHERE NOT ST_IsEmpty(x.geom)
+            ) AS feature
+          ) AS featurecollection
+          `
         }
     ],
 };
