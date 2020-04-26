@@ -36,9 +36,12 @@ module.exports = class postgis2geojson{
                 reject('No SQL of select statement for this layer.');
             }
             const stream = client.query(layer.select);
-            stream.then(async res=>{
+            stream.then(res=>{
+                // res.rows[0].json.features.forEach(feature=>{
+                //     writeStream.write(JSON.stringify(feature) + "\n");
+                // })
                 const json = JSON.stringify(res.rows[0].json);
-                await writeStream.write(json);
+                writeStream.write(json);
                 resolve(layer.geojsonFileName);
             }).catch(err=>{
                 reject(err);

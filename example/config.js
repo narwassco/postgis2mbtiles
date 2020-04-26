@@ -61,7 +61,7 @@ module.exports = {
                   a.name as metertype,
                   x.pipesize,
                   x.zonecd,
-                  x.connno,
+                  CASE WHEN x.connno=-1 THEN NULL ELSE LPAD(CAST(x.connno as text), 4, '0') END as connno,
                   x.installationdate,
                   x.serialno,
 				          b.name as customer,
@@ -207,9 +207,28 @@ module.exports = {
             `
         },
         {
-          name: 'wtp',
-          geojsonFileName: __dirname + '/wtp.geojson',
+          name: 'plant',
+          geojsonFileName: __dirname + '/plant.geojson',
           select:`
+          WITH plant as(
+            SELECT
+              wtpid as fid,
+              name,
+              'WTP' as plant_type,
+              insertdate,
+              updatedate,
+              geom
+            FROM wtp
+            UNION ALL
+            SELECT
+              intakeid as fid,
+              name,
+              'INTAKE' as plant_type,
+              insertdate,
+              updatedate,
+              geom
+            FROM intake
+          )
           SELECT row_to_json(featurecollection) AS json FROM (
             SELECT
               'FeatureCollection' AS type,
@@ -221,40 +240,14 @@ module.exports = {
               row_to_json((
                 SELECT p FROM (
                 SELECT
-                  x.wtpid as fid,
-                  x.name,
-                  x.insertdate,
-                  x.updatedate
-                ) AS p
+                x.fid,
+                x.name,
+                x.plant_type,
+                x.insertdate,
+                x.updatedate
+              ) AS p
               )) AS properties
-              FROM wtp x
-              WHERE NOT ST_IsEmpty(x.geom)
-            ) AS feature
-          ) AS featurecollection
-          `
-        },
-        {
-          name: 'intake',
-          geojsonFileName: __dirname + '/intake.geojson',
-          select:`
-          SELECT row_to_json(featurecollection) AS json FROM (
-            SELECT
-              'FeatureCollection' AS type,
-              array_to_json(array_agg(feature)) AS features
-            FROM (
-              SELECT
-              'Feature' AS type,
-              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
-              row_to_json((
-                SELECT p FROM (
-                SELECT
-                  x.intakeid as fid,
-                  x.name,
-                  x.insertdate,
-                  x.updatedate
-                ) AS p
-              )) AS properties
-              FROM intake x
+                FROM plant x
               WHERE NOT ST_IsEmpty(x.geom)
             ) AS feature
           ) AS featurecollection
