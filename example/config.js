@@ -6,6 +6,7 @@ module.exports = {
         post:5432,
         database:'narwassco',
     },
+    mbtiles: __dirname + '/narok.mbtiles',
     layers : [
         {
             name: 'pipeline',

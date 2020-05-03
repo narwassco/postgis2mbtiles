@@ -7,7 +7,25 @@ After using this module to extract your data, you can upload GeoJSON data to [Ma
 
 Then, you can create style file for your vector tile and enjoy it!
 
+## Preparation
+This module uses [`tippecanoe`](https://github.com/mapbox/tippecanoe) to convert geojson files to mbtiles. Please make sure to install it before running.
+
+for MacOS
+```
+$ brew install tippecanoe
+```
+
+for Ubuntu
+```
+$ git clone https://github.com/mapbox/tippecanoe.git
+$ cd tippecanoe
+$ make -j
+$ make install
+```
+
+
 ## Installation
+
 ```sh
 $ npm install JinIgarashi/postgis2geojson
 ```
@@ -33,10 +51,13 @@ const postgis2geojson = require('postgis2geojson');
 const config = require('./config');
 
 const pg2json = new postgis2geojson(config);
-const result = await pg2json.run();
-console.log(result);
+pg2json.run().then(res=>{
+        console.log(res);
+}).catch(err=>{
+    console.log(err);
+})
 ```
-This module will return GeoJSON file paths which are exported in your directory.
+This module will return MBTiles file paths which are exported in your directory.
 
 
 ## Configuration
@@ -51,6 +72,11 @@ db: {
     post:5432,
     database:'narwassco',
 },
+```
+
+### mbtiles's Setting
+```js
+mbtiles: __dirname + '/narok.mbtiles',
 ```
 
 ### Layers' Setting

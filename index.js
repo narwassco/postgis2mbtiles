@@ -1,5 +1,6 @@
 const { Pool } = require('pg')
 const fs = require('fs');
+const execSync = require('child_process').execSync;
 
 module.exports = class postgis2geojson{
     constructor(config){
@@ -7,20 +8,30 @@ module.exports = class postgis2geojson{
         this.pool = new Pool(config.db);
     }
 
-    async run(){
-        const client = await this.pool.connect();
-        let res;
-        try{
-            await this.dump(client)
-            .then(data=>{
-                res = data;
+    run(){
+        return new Promise((resolve, reject) =>{
+            this.dump().then(data=>{return this.createMbtiles(data, this.config.mbtiles)})
+            .then(res=>{
+                resolve(res);
             }).catch(err=>{
-                console.log(err);
+                reject(err);
             });
-        }finally{
-            client.release();
-        }
-        return res;
+        });
+    }
+
+    createMbtiles(geojson, mbtiles){
+        return new Promise((resolve, reject) =>{
+            if (fs.existsSync(mbtiles)){
+                fs.unlinkSync(mbtiles);
+            }
+            const cmd = `tippecanoe -rg -z18 -Z0 -o ${mbtiles} ${geojson.join(' ')}`;
+            execSync(cmd).toString();
+            geojson.forEach(f=>{
+                fs.unlinkSync(f);
+            });
+            console.log(`Creating voctor tile was done successfully at ${mbtiles}`)
+            resolve(mbtiles);
+        });
     }
 
     createGeojson(client, layer){
@@ -49,12 +60,17 @@ module.exports = class postgis2geojson{
         });
     }
 
-    dump(client){
-        const layers = this.config.layers;
-        let promises = [];
-        layers.forEach(layer=>{
-            promises.push(this.createGeojson(client, layer));
-        })
-        return Promise.all(promises);
+    async dump(){
+        const client = await this.pool.connect();
+        try{
+            const layers = this.config.layers;
+            let promises = [];
+            layers.forEach(layer=>{
+                promises.push(this.createGeojson(client, layer));
+            })
+            return Promise.all(promises);
+        }finally{
+            client.release();
+        }
     }
 }
