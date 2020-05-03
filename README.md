@@ -126,8 +126,35 @@ The below is just an example of Pipeline Layer.
 },
 ```
 
-## Contribution to this repository
-Your contribution or feedback to this repository are most welcome.
+## Using Docker on Windows
+
+### Installation of Docker for Windows
+See [here](https://docs.docker.com/docker-for-windows) how to install docker for windows.
+
+Please also do [`file sharing`](https://docs.docker.com/docker-for-windows/#resources) setting on preferences of Docker for Windows. 
+
+You must share the directory where you want to save `mbtiles` by the tool.
+
+### Running `postgis2geojson` tool on Docker
+Before running `Docker`, please configure database setting on `config.js` file.
+
+Using `docker-compose` is easier.
+```sh
+docker-compose up
+```
+
+or
+
+There is another option using `docker build` and `docker run` as follows.
+
+Please replace your favorite directory on host computer at `{host_directory}` before running it.
+```sh
+docker build -t narwassco/postgis2geojson .
+docker container rm postgis2geojson
+docker run --name postgis2geojson -v {host_directory}:/tmp/data -it narwassco/postgis2geojson /bin/bash
+```
+
+`narok.mbtiles` will be created under `data` directory.
 
 ```
 copyright (c) 2020 Jin IGARASHI

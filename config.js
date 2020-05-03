@@ -1,10 +1,10 @@
-const export_dir = __dirname + '/data';
+const export_dir = '/tmp/data';
 
 module.exports = {
     db: {
         user:'postgres',
         password:'Your password',
-        host:'localhost',
+        host:'host.docker.internal',
         post:5432,
         database:'narwassco',
     },

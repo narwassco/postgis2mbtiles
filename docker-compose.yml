@@ -1,0 +1,8 @@
+version: '2'
+services:
+  postgis2geojson:
+    build: .
+    volumes:
+      - ./data:/tmp/data
+      - ./config.js:/tmp/src/postgis2geojson/example/config.js
+      
