@@ -64,15 +64,17 @@ module.exports = {
                   SELECT
                   x.meterid as fid,
                   a.name as metertype,
-                  x.pipesize,
+                  x.pipesize as diameter,
                   x.zonecd,
                   CASE WHEN x.connno=-1 THEN NULL ELSE LPAD(CAST(x.connno as text), 4, '0') END as connno,
                   x.installationdate,
+                  b.status,
                   x.serialno,
-				          b.name as customer,
+                  b.name as customer,
+                  c.name as village,
                   x.insertdate,
                   x.updatedate,
-                  x.isgrantprj
+                  x.isgrantprj as isjica
                 ) AS p
               )) AS properties
               FROM meter x
@@ -81,6 +83,8 @@ module.exports = {
               LEFT JOIN customer b
               ON x.zonecd = b.zonecd
               AND x.connno = b.connno
+              LEFT JOIN village c
+			        on b.villageid = c.villageid
               WHERE NOT ST_IsEmpty(x.geom)
             ) AS feature
           ) AS featurecollection
@@ -103,9 +107,9 @@ module.exports = {
                 SELECT
                   x.valveid as fid,
                   a.name as valvetype,
-                  x.pipesize,
+                  x.pipesize as diameter,
                   x.installationdate,
-                  x.status,
+                  CASE WHEN x.status = 1 THEN 'Closed' ELSE 'Opened' END as status,
                   x.insertdate,
                   x.updatedate,
                   x.isjica
@@ -326,6 +330,33 @@ module.exports = {
           `
         },
         {
+          name: 'dma',
+          geojsonFileName: export_dir + '/dma.geojson',
+          select:`
+          SELECT row_to_json(featurecollection) AS json FROM (
+            SELECT
+              'FeatureCollection' AS type,
+              array_to_json(array_agg(feature)) AS features
+            FROM (
+              SELECT
+              'Feature' AS type,
+              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT p FROM (
+                SELECT
+                  x.pkuid as fid, 
+				          x.name,
+                  x.insertdate,
+                  x.updatedate
+                ) AS p
+              )) AS properties
+              FROM dma x
+              WHERE NOT ST_IsEmpty(x.geom)
+            ) AS feature
+          ) AS featurecollection
+          `
+        },
+        {
           name: 'point_annotation',
           geojsonFileName: export_dir + '/point_annotation.geojson',
           select:`
@@ -357,6 +388,20 @@ module.exports = {
               'village' as layer,
               ST_CENTROID(geom) as geom
             FROM village
+            UNION ALL
+            SELECT 
+              pkuid as masterid, 
+              name, 
+              'dma' as layer,
+              ST_CENTROID(geom) as geom
+            FROM dma
+            UNION ALL
+            SELECT 
+              placeid as masterid, 
+              name, 
+              category as layer, 
+              geom
+            FROM places
           )
           SELECT row_to_json(featurecollection) AS json FROM (
             SELECT
