@@ -32,6 +32,7 @@ RUN cd .. \
 # Copy Config file to container
 COPY config.js /tmp/src/postgis2geojson/example/config.js
 
+# Copy entrypoint script file to container
 ADD entrypoint.sh /tmp/entrypoint.sh
 RUN chmod +x /tmp/entrypoint.sh
 CMD ["/tmp/entrypoint.sh"]
