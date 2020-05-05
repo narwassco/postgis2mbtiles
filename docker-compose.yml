@@ -2,7 +2,7 @@ version: '2'
 services:
   nodejs:
     image: narwassco/postgis2geojson
-    build: .
+    # build: .
     volumes:
       - ./data:/tmp/data
       - ./config.js:/tmp/src/postgis2geojson/example/config.js
