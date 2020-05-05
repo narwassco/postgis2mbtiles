@@ -1,4 +1,4 @@
-const export_dir = __dirname + '/data';
+const export_dir = __dirname;
 
 module.exports = {
     db: {
@@ -9,6 +9,8 @@ module.exports = {
         database:'narwassco',
     },
     mbtiles: export_dir + '/narok.mbtiles',
+    minzoom: 10,
+    maxzoom: 18,
     layers : [
         {
             name: 'pipeline',

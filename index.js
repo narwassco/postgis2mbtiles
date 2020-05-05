@@ -24,7 +24,7 @@ module.exports = class postgis2geojson{
             if (fs.existsSync(mbtiles)){
                 fs.unlinkSync(mbtiles);
             }
-            const cmd = `tippecanoe -rg -z18 -Z0 -o ${mbtiles} ${geojson.join(' ')}`;
+            const cmd = `tippecanoe -rg -z${this.config.maxzoom} -Z${this.config.minzoom} -o ${mbtiles} ${geojson.join(' ')}`;
             execSync(cmd).toString();
             geojson.forEach(f=>{
                 fs.unlinkSync(f);
