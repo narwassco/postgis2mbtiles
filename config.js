@@ -3,7 +3,7 @@ const export_dir = '/tmp/data';
 module.exports = {
     db: {
         user:'postgres',
-        password:'Your password',
+        password:'N@rw@ssc0',
         host:'host.docker.internal',
         post:5432,
         database:'narwassco',
@@ -24,6 +24,13 @@ module.exports = {
                   SELECT
                     'Feature' AS type,
                     ST_AsGeoJSON(ST_TRANSFORM(ST_MakeValid(x.geom),4326))::json AS geometry,
+                    row_to_json((
+                      SELECT t FROM (
+                        SELECT
+                          22 as maxzoom,
+                          10 as minzoom
+                      ) AS t
+                    )) AS tippecanoe,
                     row_to_json((
                       SELECT p FROM (
                         SELECT
@@ -59,6 +66,13 @@ module.exports = {
               SELECT
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    14 as minzoom
+                ) AS t
+              )) AS tippecanoe,
               row_to_json((
                 SELECT p FROM (
                   SELECT
@@ -103,6 +117,13 @@ module.exports = {
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(ST_MakeValid(x.geom),4326))::json AS geometry,
               row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    15 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
                 SELECT p FROM (
                 SELECT
                   x.valveid as fid,
@@ -136,6 +157,13 @@ module.exports = {
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
               row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    15 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
                 SELECT p FROM (
                 SELECT
                   x.firehydrantid as fid,
@@ -165,6 +193,13 @@ module.exports = {
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
               row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    15 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
                 SELECT p FROM (
                 SELECT
                   x.washoutid as fid,
@@ -193,6 +228,13 @@ module.exports = {
                   SELECT
                     'Feature' AS type,
                     ST_AsGeoJSON(ST_TRANSFORM(ST_MakeValid(x.geom),4326))::json AS geometry,
+                    row_to_json((
+                      SELECT t FROM (
+                        SELECT
+                          22 as maxzoom,
+                          10 as minzoom
+                      ) AS t
+                    )) AS tippecanoe,
                     row_to_json((
                       SELECT p FROM (
                         SELECT
@@ -247,6 +289,13 @@ module.exports = {
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(ST_MakeValid(x.geom),4326))::json AS geometry,
               row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    10 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
                 SELECT p FROM (
                 SELECT
                 x.fid,
@@ -288,6 +337,58 @@ module.exports = {
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
               row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    16 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
+                SELECT p FROM (
+                SELECT
+                  x.fid,
+                  x.parcel_no
+                ) AS p
+              )) AS properties
+              FROM percels x
+              WHERE NOT ST_IsEmpty(x.geom)
+            ) AS feature
+          ) AS featurecollection
+          `
+        },
+        {
+          name: 'parcels_annotation',
+          geojsonFileName: export_dir + '/parcels_annotation.geojson',
+          select:`
+          WITH percels AS(
+            SELECT 
+              plotid as fid, 
+              CASE WHEN parcel_no = '0' THEN NULL ELSE parcel_no END as parcel_no,  
+              ST_CENTROID(geom) as geom
+            FROM planner_plot
+            UNION ALL
+            SELECT 
+              gid as fid, 
+              plotno as parcel_no, 
+              ST_CENTROID(geom) as geom
+            FROM basemap_plots
+          )
+          SELECT row_to_json(featurecollection) AS json FROM (
+            SELECT
+              'FeatureCollection' AS type,
+              array_to_json(array_agg(feature)) AS features
+            FROM (
+              SELECT
+              'Feature' AS type,
+              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    17 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
                 SELECT p FROM (
                 SELECT
                   x.fid,
@@ -312,6 +413,13 @@ module.exports = {
               SELECT
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    10 as minzoom
+                ) AS t
+              )) AS tippecanoe,
               row_to_json((
                 SELECT p FROM (
                 SELECT
@@ -341,6 +449,13 @@ module.exports = {
               SELECT
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    10 as minzoom
+                ) AS t
+              )) AS tippecanoe,
               row_to_json((
                 SELECT p FROM (
                 SELECT
@@ -411,6 +526,13 @@ module.exports = {
               SELECT
               'Feature' AS type,
               ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    22 as maxzoom,
+                    10 as minzoom
+                ) AS t
+              )) AS tippecanoe,
               row_to_json((
                 SELECT p FROM (
                 SELECT
