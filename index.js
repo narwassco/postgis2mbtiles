@@ -48,9 +48,6 @@ module.exports = class postgis2geojson{
             }
             const stream = client.query(layer.select);
             stream.then(res=>{
-                // res.rows[0].json.features.forEach(feature=>{
-                //     writeStream.write(JSON.stringify(feature) + "\n");
-                // })
                 const json = JSON.stringify(res.rows[0].json);
                 writeStream.write(json);
                 resolve(layer.geojsonFileName);
