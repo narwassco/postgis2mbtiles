@@ -41,7 +41,7 @@ module.exports = {
                 "Town",
                 geom
               FROM pipenet
-              WHERE "Town" <> 'Narok'
+              WHERE "Town" <> 'Narok' or "Town" is null
             )
             SELECT row_to_json(featurecollection) AS json FROM (
                 SELECT
