@@ -16,6 +16,33 @@ module.exports = {
             name: 'pipeline',
             geojsonFileName: export_dir + '/pipeline.geojson',
             select: `
+            WITH pipeline AS (
+              SELECT 
+                pipeid,
+                pipetypeid,
+                pipesize,
+                materialid,
+                constructiondate,
+                insertdate,
+                updatedate,
+                "Town",
+                geom
+              FROM pipenet
+              WHERE "Town" = 'Narok' AND isjica = true
+              UNION ALL
+              SELECT 
+                pipeid,
+                pipetypeid,
+                pipesize,
+                materialid,
+                constructiondate,
+                insertdate,
+                updatedate,
+                "Town",
+                geom
+              FROM pipenet
+              WHERE "Town" <> 'Narok'
+            )
             SELECT row_to_json(featurecollection) AS json FROM (
                 SELECT
                   'FeatureCollection' AS type,
@@ -41,10 +68,10 @@ module.exports = {
                           x.constructiondate,
                           x.insertdate,
                           x.updatedate,
-                          x.isjica
+                          x."Town"
                       ) AS p
                     )) AS properties
-                  FROM pipenet x
+                  FROM pipeline x
                   INNER JOIN pipetype a
                   ON x.pipetypeid = a.pipetypeid
                   INNER JOIN material b

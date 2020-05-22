@@ -1,0 +1,369 @@
+{
+    "version": 8,
+    "name": "Streets",
+    "center": [35.871812226856605, -1.0885847948868133],
+    "zoom": 13.10229670637963,
+    "bearing": 0,
+    "pitch": 0,
+    "sources": {
+        "composite": {
+            "url": "mapbox://narwassco.3vk2tnnz",
+            "type": "vector"
+        }
+    },
+    "sprite": "mapbox://sprites/narwassco/ck9rin9ej0xn51iqxp57a361v/0xstcmrel9h8p9ygvkbv30lhv",
+    "glyphs": "mapbox://fonts/narwassco/{fontstack}/{range}.pbf",
+    "layers": [
+        {
+            "id": "village",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "village",
+            "minzoom": 10,
+            "maxzoom": 17,
+            "paint": {
+                "line-width": 1.8,
+                "line-color": "hsl(118, 36%, 44%)",
+                "line-dasharray": [3, 1.5]
+            }
+        },
+        {
+            "id": "parcels",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "parcels",
+            "minzoom": 16,
+            "layout": {},
+            "paint": {"line-width": 1.2}
+        },
+        {
+            "id": "wtp",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "plant",
+            "minzoom": 10,
+            "filter": ["match", ["get", "plant_type"], ["WTP"], true, false],
+            "layout": {},
+            "paint": {
+                "fill-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    0,
+                    "hsl(0, 5%, 83%)",
+                    22,
+                    "hsl(0, 5%, 83%)"
+                ],
+                "fill-outline-color": "rgb(0, 0, 0)",
+                "fill-opacity": 0.6
+            }
+        },
+        {
+            "id": "intake",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "plant",
+            "minzoom": 10,
+            "filter": ["match", ["get", "plant_type"], ["INTAKE"], true, false],
+            "layout": {},
+            "paint": {
+                "fill-color": "hsl(0, 18%, 85%)",
+                "fill-outline-color": "hsl(0, 8%, 6%)",
+                "fill-opacity": 0.6
+            }
+        },
+        {
+            "id": "pipeline",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "pipeline",
+            "minzoom": 10,
+            "layout": {},
+            "paint": {
+                "line-color": [
+                    "case",
+                    ["==", ["get", "isjica"], false],
+                    "hsl(240, 100%, 50%)",
+                    ["==", ["get", "isjica"], true],
+                    "hsl(0, 100%, 50%)",
+                    "hsl(240, 100%, 50%)"
+                ]
+            }
+        },
+        {
+            "id": "tank",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "tank",
+            "minzoom": 13,
+            "layout": {},
+            "paint": {
+                "fill-color": "hsl(75, 99%, 91%)",
+                "fill-outline-color": "hsl(0, 99%, 0%)"
+            }
+        },
+        {
+            "id": "washout",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "washout",
+            "minzoom": 15,
+            "layout": {
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    "",
+                    16,
+                    ["concat", "Washout ", ["to-string", ["get", "size"]]]
+                ],
+                "text-size": 12,
+                "text-offset": [0, 1],
+                "icon-image": "washout"
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        },
+        {
+            "id": "firehydrant",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "firehydrant",
+            "minzoom": 15,
+            "layout": {
+                "icon-image": "fire-station-15",
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    "",
+                    16,
+                    ["concat", "FH ", ["to-string", ["get", "size"]]]
+                ],
+                "text-size": 12,
+                "text-offset": [0, -1]
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        },
+        {
+            "id": "valve",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "valve",
+            "minzoom": 15,
+            "layout": {
+                "icon-image": "valve",
+                "icon-size": 0.7,
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    "",
+                    16,
+                    [
+                        "concat",
+                        ["to-string", ["get", "valvetype"]],
+                        " ",
+                        ["get", "pipesize"]
+                    ]
+                ],
+                "text-size": 12,
+                "text-offset": [0, 1.5],
+                "text-max-width": 6
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        },
+        {
+            "id": "flow meter",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "meter",
+            "minzoom": 14,
+            "filter": [
+                "match",
+                ["get", "metertype"],
+                ["", "Customer Meter"],
+                false,
+                true
+            ],
+            "layout": {
+                "text-field": ["step", ["zoom"], "", 14, ["get", "metertype"]],
+                "text-size": 12,
+                "text-font": [
+                    "Arial Unicode MS Regular",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-offset": [0, 1],
+                "icon-image": "milan-metro",
+                "text-justify": "left"
+            },
+            "paint": {
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 1,
+                "text-color": "hsl(0, 0%, 0%)"
+            }
+        },
+        {
+            "id": "meter",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "meter",
+            "minzoom": 16,
+            "filter": [
+                "match",
+                ["get", "metertype"],
+                ["", "Customer Meter"],
+                true,
+                false
+            ],
+            "layout": {
+                "text-size": 12,
+                "text-font": [
+                    "Arial Unicode MS Regular",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-offset": [0, 1],
+                "icon-image": "meter",
+                "icon-size": 0.7,
+                "text-justify": "left",
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    "",
+                    17,
+                    [
+                        "concat",
+                        ["to-string", ["get", "connno"]],
+                        ["get", "zonecd"]
+                    ]
+                ]
+            },
+            "paint": {
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 1,
+                "text-color": "hsl(0, 0%, 0%)"
+            }
+        },
+        {
+            "id": "village_annotation",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "point_annotation",
+            "minzoom": 10,
+            "maxzoom": 17,
+            "filter": ["match", ["get", "layer"], ["village"], true, false],
+            "layout": {
+                "text-field": ["to-string", ["get", "name"]],
+                "text-size": 15,
+                "text-font": [
+                    "Arial Unicode MS Bold",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-max-width": 8,
+                "icon-image": "default-6",
+                "icon-size": 1.1,
+                "icon-text-fit": "both"
+            },
+            "paint": {
+                "text-color": "hsl(131, 64%, 45%)",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 1.5
+            }
+        },
+        {
+            "id": "parcels_annotation",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "parcels",
+            "minzoom": 17,
+            "layout": {
+                "text-field": ["to-string", ["get", "parcel_no"]],
+                "text-size": 12,
+                "symbol-avoid-edges": true
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        },
+        {
+            "id": "pipeline_annotation",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "pipeline",
+            "minzoom": 16,
+            "layout": {
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    "",
+                    16,
+                    [
+                        "concat",
+                        ["to-string", ["get", "pipesize"]],
+                        " ",
+                        ["get", "material"]
+                    ]
+                ],
+                "symbol-placement": "line",
+                "text-size": 12
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        },
+        {
+            "id": "intake_annotation",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "point_annotation",
+            "minzoom": 10,
+            "filter": ["match", ["get", "layer"], ["intake"], true, false],
+            "layout": {
+                "text-field": ["to-string", ["get", "name"]],
+                "text-size": 12,
+                "text-max-width": 7
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        },
+        {
+            "id": "wtp_annotation",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "point_annotation",
+            "minzoom": 10,
+            "filter": ["match", ["get", "layer"], ["wtp"], true, false],
+            "layout": {
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    ["get", "name"],
+                    22,
+                    ["get", "name"]
+                ],
+                "text-font": [
+                    "Arial Unicode MS Bold",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": 12,
+                "text-max-width": 7,
+                "icon-image": "rectangle-yellow-6",
+                "icon-text-fit": "both",
+                "icon-size": 1.2
+            },
+            "paint": {
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 1,
+                "text-color": "hsl(5, 86%, 49%)"
+            }
+        },
+        {
+            "id": "tank_annotation",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "point_annotation",
+            "minzoom": 13,
+            "filter": ["match", ["get", "layer"], ["tank"], true, false],
+            "layout": {
+                "text-field": ["to-string", ["get", "name"]],
+                "text-font": [
+                    "Arial Unicode MS Regular",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": 13
+            },
+            "paint": {"text-halo-color": "#ffffff", "text-halo-width": 1}
+        }
+    ]
+}
