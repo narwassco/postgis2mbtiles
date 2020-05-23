@@ -1,4 +1,11 @@
 const export_dir = '/tmp/data';
+const srid = 21036;
+const bounds = {
+  narok : [812426.912,9874766.763, 824725.257,9886273.737],
+  ololulunga: [785664.199,9881732.510, 804144.874,9896784.534],
+  kilgoris:[705144.310,9886407.088,712355.048,9892300.895],
+  suswa:[845132.373,9870063.657,898656.630,9921327.599],
+}
 
 module.exports = {
     db: {
@@ -17,31 +24,13 @@ module.exports = {
             geojsonFileName: export_dir + '/pipeline.geojson',
             select: `
             WITH pipeline AS (
-              SELECT 
-                pipeid,
-                pipetypeid,
-                pipesize,
-                materialid,
-                constructiondate,
-                insertdate,
-                updatedate,
-                "Town",
-                geom
-              FROM pipenet
-              WHERE "Town" = 'Narok' AND isjica = true
+              SELECT * FROM pipenet WHERE geom && ST_MakeEnvelope(${bounds.narok.join(",")}, ${srid}) AND isjica = true
               UNION ALL
-              SELECT 
-                pipeid,
-                pipetypeid,
-                pipesize,
-                materialid,
-                constructiondate,
-                insertdate,
-                updatedate,
-                "Town",
-                geom
-              FROM pipenet
-              WHERE "Town" <> 'Narok' or "Town" is null
+              SELECT * FROM pipenet WHERE geom && ST_MakeEnvelope(${bounds.ololulunga.join(",")}, ${srid})
+              UNION ALL
+              SELECT * FROM pipenet WHERE geom && ST_MakeEnvelope(${bounds.kilgoris.join(",")}, ${srid})
+              UNION ALL
+              SELECT * FROM pipenet WHERE geom && ST_MakeEnvelope(${bounds.suswa.join(",")}, ${srid})
             )
             SELECT row_to_json(featurecollection) AS json FROM (
                 SELECT
@@ -135,6 +124,15 @@ module.exports = {
           name: 'valve',
           geojsonFileName: export_dir + '/valve.geojson',
           select:`
+          WITH valves AS (
+            SELECT * FROM valve WHERE geom && ST_MakeEnvelope(${bounds.narok.join(",")}, ${srid}) AND isjica = true
+            UNION ALL
+            SELECT * FROM valve WHERE geom && ST_MakeEnvelope(${bounds.ololulunga.join(",")}, ${srid})
+            UNION ALL
+            SELECT * FROM valve WHERE geom && ST_MakeEnvelope(${bounds.kilgoris.join(",")}, ${srid})
+            UNION ALL
+            SELECT * FROM valve WHERE geom && ST_MakeEnvelope(${bounds.suswa.join(",")}, ${srid})
+          )
           SELECT row_to_json(featurecollection) AS json FROM (
             SELECT
               'FeatureCollection' AS type,
@@ -163,7 +161,7 @@ module.exports = {
                   x.isjica
                 ) AS p
               )) AS properties
-              FROM valve x
+              FROM valves x
               INNER JOIN valvetype a
               ON x.valvetypeid = a.valvetypeid
               WHERE NOT ST_IsEmpty(x.geom)
