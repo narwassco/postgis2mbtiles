@@ -67,7 +67,8 @@ module.exports = class postgis2geojson{
             })
             return Promise.all(promises);
         }finally{
-            client.release();
+            client.on('drain', client.end.bind(client));
+            // client.release();
         }
     }
 }
