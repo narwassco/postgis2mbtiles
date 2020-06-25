@@ -1,4 +1,9 @@
 # postgis2geojson
+![GitHub](https://img.shields.io/github/license/narwassco/postgis2geojson)
+![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/narwassco/postgis2geojson)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/narwassco/postgis2geojson)
+[![Gitter](https://badges.gitter.im/narwassco/community.svg)](https://gitter.im/narwassco/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 A module extracting the data from PostGIS to Geojson.
 
 I created this module because I wanted to extract PostGIS data as GeoJSON format in order to use it for Mapbox Vector Tile.
