@@ -30,7 +30,7 @@ RUN cd .. \
     && npm install
 
 # Copy Config file to container
-COPY config.js /tmp/src/postgis2mbtiles/example/config.js
+COPY config.js /tmp/src/postgis2mbtiles/config.js
 
 # Copy entrypoint script file to container
 ADD entrypoint.sh /tmp/entrypoint.sh

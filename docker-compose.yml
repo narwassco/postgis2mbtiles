@@ -7,5 +7,5 @@ services:
       - ./app-docker.env
     volumes:
       - ./data:/tmp/data
-      - ./config.js:/tmp/src/postgis2mbtiles/example/config.js
+      - ./config.js:/tmp/src/postgis2mbtiles/config.js
       
