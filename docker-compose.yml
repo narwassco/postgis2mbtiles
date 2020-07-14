@@ -6,6 +6,6 @@ services:
     env_file:
       - ./app-docker.env
     volumes:
-      - ./data:/tmp/data
+      - ./data:/tmp/src/postgis2mbtiles/data
       - ./config.js:/tmp/src/postgis2mbtiles/config.js
       
