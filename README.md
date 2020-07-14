@@ -1,7 +1,7 @@
-# postgis2geojson
-![GitHub](https://img.shields.io/github/license/narwassco/postgis2geojson)
-![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/narwassco/postgis2geojson)
-![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/narwassco/postgis2geojson)
+# postgis2mbtiles
+![GitHub](https://img.shields.io/github/license/narwassco/postgis2mbtiles)
+![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/narwassco/postgis2mbtiles)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/narwassco/postgis2mbtiles)
 [![Gitter](https://badges.gitter.im/narwassco/community.svg)](https://gitter.im/narwassco/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 A module extracting the data from PostGIS to Geojson.
@@ -32,14 +32,14 @@ $ make install
 ## Installation
 
 ```sh
-$ npm install JinIgarashi/postgis2geojson
+$ npm install narwassco/postgis2mbtiles
 ```
 
 or
 
 ```sh
-$ git clone https://github.com/JinIgarashi/postgis2geojson.git
-$ cd postgis2geojson
+$ git clone https://github.com/narwassco/postgis2mbtiles.git
+$ cd postgis2mbtiles
 $ npm install
 ```
 
@@ -52,10 +52,10 @@ $ npm run example
 ## Usage
 See also [example.js](./example/example.js)
 ```js
-const postgis2geojson = require('postgis2geojson');
+const postgis2mbtiles = require('postgis2mbtiles');
 const config = require('./config');
 
-const pg2json = new postgis2geojson(config);
+const pg2json = new postgis2mbtiles(config);
 pg2json.run().then(res=>{
         console.log(res);
 }).catch(err=>{
@@ -140,7 +140,7 @@ Please also do [`file sharing`](https://docs.docker.com/docker-for-windows/#reso
 
 You must share the directory where you want to save `mbtiles` by the tool.
 
-### Running `postgis2geojson` tool on Docker
+### Running `postgis2mbtiles` tool on Docker
 Before running `Docker`, please configure database setting on `config.js` file.
 
 Using `docker-compose` is easier.
@@ -154,9 +154,9 @@ There is another option using `docker build` and `docker run` as follows.
 
 Please replace your favorite directory on host computer at `{host_directory}` before running it.
 ```sh
-docker build -t narwassco/postgis2geojson .
-docker container rm postgis2geojson
-docker run --name postgis2geojson -v {host_directory}:/tmp/data -it narwassco/postgis2geojson /bin/bash
+docker build -t narwassco/postgis2mbtiles .
+docker container rm postgis2mbtiles
+docker run --name postgis2mbtiles -v {host_directory}:/tmp/data -it narwassco/postgis2mbtiles /bin/bash
 ```
 
 `narok.mbtiles` will be created under `data` directory.

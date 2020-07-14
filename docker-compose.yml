@@ -1,9 +1,11 @@
 version: '2'
 services:
   nodejs:
-    image: narwassco/postgis2geojson
-    # build: .
+    image: narwassco/postgis2mbtiles
+    build: .
+    env_file:
+      - ./app-docker.env
     volumes:
       - ./data:/tmp/data
-      - ./config.js:/tmp/src/postgis2geojson/example/config.js
+      - ./config.js:/tmp/src/postgis2mbtiles/example/config.js
       

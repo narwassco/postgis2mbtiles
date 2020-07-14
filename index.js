@@ -1,21 +1,22 @@
-const { Pool } = require('pg')
 const fs = require('fs');
 const execSync = require('child_process').execSync;
+const {postgis2geojson} = require('@watergis/postgis2geojson');
 
-module.exports = class postgis2geojson{
+module.exports = class postgis2mbtiles{
     constructor(config){
         this.config = config;
-        this.pool = new Pool(config.db);
     }
 
     run(){
         return new Promise((resolve, reject) =>{
-            this.dump().then(data=>{return this.createMbtiles(data, this.config.mbtiles)})
+            const pg2json = new postgis2geojson(this.config);
+            pg2json.run()
+            .then(data=>{return this.createMbtiles(data, this.config.mbtiles)})
             .then(res=>{
                 resolve(res);
             }).catch(err=>{
                 reject(err);
-            });
+            })
         });
     }
 
@@ -32,43 +33,5 @@ module.exports = class postgis2geojson{
             console.log(`Creating voctor tile was done successfully at ${mbtiles}`)
             resolve(mbtiles);
         });
-    }
-
-    createGeojson(client, layer){
-        return new Promise((resolve, reject) =>{
-            if (!client){
-                reject('No pg client.');
-            }
-            const writeStream = fs.createWriteStream(layer.geojsonFileName);
-            writeStream.on('error', err=>{
-                reject(err);
-            })
-            if (!layer.select){
-                reject('No SQL of select statement for this layer.');
-            }
-            const stream = client.query(layer.select);
-            stream.then(res=>{
-                const json = JSON.stringify(res.rows[0].json);
-                writeStream.write(json);
-                resolve(layer.geojsonFileName);
-            }).catch(err=>{
-                reject(err);
-            })
-        });
-    }
-
-    async dump(){
-        const client = await this.pool.connect();
-        try{
-            const layers = this.config.layers;
-            let promises = [];
-            layers.forEach(layer=>{
-                promises.push(this.createGeojson(client, layer));
-            })
-            return Promise.all(promises);
-        }finally{
-            client.on('drain', client.end.bind(client));
-            // client.release();
-        }
     }
 }

@@ -1,15 +1,15 @@
-const postgis2geojson = require('../index');
-const config = require('./config');
+const postgis2mbtiles = require('../index');
+const config = require('../config');
 
 const example = () =>{
-    console.time('postgis2geojson');
-    const pg2json = new postgis2geojson(config);
+    console.time('postgis2mbtiles');
+    const pg2json = new postgis2mbtiles(config);
     pg2json.run().then(res=>{
         console.log(res);
     }).catch(err=>{
         console.log(err);
     }).finally(()=>{
-        console.timeEnd('postgis2geojson');
+        console.timeEnd('postgis2mbtiles');
     })
 };
 

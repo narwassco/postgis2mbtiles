@@ -1,4 +1,7 @@
-const export_dir = '/tmp/data';
+require('dotenv').config();
+const env = process.env;
+
+const export_dir = env.export_dir || __dirname;
 const srid = 21036;
 const bounds = {
   narok : [812426.912,9874766.763, 824725.257,9886273.737],
@@ -9,15 +12,15 @@ const bounds = {
 
 module.exports = {
     db: {
-        user:'postgres',
-        password:'N@rw@ssc0',
-        host:'host.docker.internal',
-        post:5432,
-        database:'narwassco',
+      user:env.db_user,
+      password:env.db_password,
+      host:env.db_host,
+      post:env.db_port,
+      database:env.db_name,
     },
     mbtiles: export_dir + '/narok.mbtiles',
     minzoom: 10,
-    maxzoom: 18,
+    maxzoom: 16,
     layers : [
         {
             name: 'pipeline',
@@ -43,7 +46,7 @@ module.exports = {
                     row_to_json((
                       SELECT t FROM (
                         SELECT
-                          22 as maxzoom,
+                          16 as maxzoom,
                           10 as minzoom
                       ) AS t
                     )) AS tippecanoe,
@@ -85,7 +88,57 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
+                    16 as minzoom
+                ) AS t
+              )) AS tippecanoe,
+              row_to_json((
+                SELECT p FROM (
+                  SELECT
+                  x.meterid as fid,
+                  a.name as metertype,
+                  x.pipesize as diameter,
+                  x.zonecd,
+                  CASE WHEN x.connno=-1 THEN NULL ELSE LPAD(CAST(x.connno as text), 4, '0') END as connno,
+                  x.installationdate,
+                  b.status,
+                  x.serialno,
+                  b.name as customer,
+                  c.name as village,
+                  x.insertdate,
+                  x.updatedate,
+                  x.isgrantprj as isjica
+                ) AS p
+              )) AS properties
+              FROM meter x
+              INNER JOIN metertype a
+              ON x.metertypeid = a.metertypeid
+              LEFT JOIN customer b
+              ON x.zonecd = b.zonecd
+              AND x.connno = b.connno
+              LEFT JOIN village c
+			        on b.villageid = c.villageid
+              WHERE NOT ST_IsEmpty(x.geom) AND x.metertypeid = 1
+            ) AS feature
+          ) AS featurecollection
+          `
+        },
+        {
+          name: 'flowmeter',
+          geojsonFileName: export_dir + '/flowmeter.geojson',
+          select:`
+          SELECT row_to_json(featurecollection) AS json FROM (
+            SELECT
+              'FeatureCollection' AS type,
+              array_to_json(array_agg(feature)) AS features
+            FROM (
+              SELECT
+              'Feature' AS type,
+              ST_AsGeoJSON(ST_TRANSFORM(x.geom,4326))::json AS geometry,
+              row_to_json((
+                SELECT t FROM (
+                  SELECT
+                    16 as maxzoom,
                     14 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -115,7 +168,7 @@ module.exports = {
               AND x.connno = b.connno
               LEFT JOIN village c
 			        on b.villageid = c.villageid
-              WHERE NOT ST_IsEmpty(x.geom)
+              WHERE NOT ST_IsEmpty(x.geom) AND x.metertypeid <> 1
             ) AS feature
           ) AS featurecollection
           `
@@ -144,7 +197,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     15 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -184,7 +237,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     15 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -220,7 +273,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     15 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -256,8 +309,8 @@ module.exports = {
                     row_to_json((
                       SELECT t FROM (
                         SELECT
-                          22 as maxzoom,
-                          10 as minzoom
+                          16 as maxzoom,
+                          13 as minzoom
                       ) AS t
                     )) AS tippecanoe,
                     row_to_json((
@@ -316,7 +369,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     10 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -364,7 +417,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     16 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -409,8 +462,8 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
-                    17 as minzoom
+                    16 as maxzoom,
+                    16 as minzoom
                 ) AS t
               )) AS tippecanoe,
               row_to_json((
@@ -441,7 +494,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     10 as minzoom
                 ) AS t
               )) AS tippecanoe,
@@ -477,8 +530,8 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
-                    10 as minzoom
+                    16 as maxzoom,
+                    13 as minzoom
                 ) AS t
               )) AS tippecanoe,
               row_to_json((
@@ -554,7 +607,7 @@ module.exports = {
               row_to_json((
                 SELECT t FROM (
                   SELECT
-                    22 as maxzoom,
+                    16 as maxzoom,
                     10 as minzoom
                 ) AS t
               )) AS tippecanoe,

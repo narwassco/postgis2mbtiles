@@ -23,14 +23,14 @@ RUN make \
 RUN npm cache clean && npm install n -g && n stable \
     && n 12.14.1 && ln -sf /usr/local/bin/node /usr/bin/node
 
-# Install postgis2geojson
+# Install postgis2mbtiles
 RUN cd .. \
-    && git clone https://github.com/narwassco/postgis2geojson.git \
+    && git clone https://github.com/narwassco/postgis2mbtiles.git \
     && cd postgis2geojson \
     && npm install
 
 # Copy Config file to container
-COPY config.js /tmp/src/postgis2geojson/example/config.js
+COPY config.js /tmp/src/postgis2mbtiles/example/config.js
 
 # Copy entrypoint script file to container
 ADD entrypoint.sh /tmp/entrypoint.sh

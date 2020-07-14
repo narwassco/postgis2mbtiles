@@ -1,7 +1,7 @@
 {
-  "name": "postgis2geojson",
+  "name": "postgis2mbtiles",
   "version": "1.0.0",
-  "description": "A module extracting the data from PostGIS to Geojson.",
+  "description": "A module extracting the data from PostGIS to mbtiles by using tippecanoe.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JinIgarashi/postgis2geojson.git"
+    "url": "git+https://github.com/narwassco/postgis2mbtiles.git"
   },
   "keywords": [
     "PostGIS",
@@ -18,13 +18,15 @@
   "author": "Jin IGARASHI",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JinIgarashi/postgis2geojson/issues"
+    "url": "https://github.com/narwassco/postgis2mbtiles/issues"
   },
-  "homepage": "https://github.com/JinIgarashi/postgis2geojson#readme",
+  "homepage": "https://github.com/narwassco/postgis2mbtiles#readme",
   "dependencies": {
+    "@watergis/postgis2geojson": "^0.1.1",
     "child_process": "^1.0.2",
-    "fs": "0.0.1-security",
-    "https": "^1.0.0",
-    "pg": "^8.0.2"
+    "fs": "0.0.1-security"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }
