@@ -26,7 +26,7 @@ RUN npm cache clean && npm install n -g && n stable \
 # Install postgis2mbtiles
 RUN cd .. \
     && git clone https://github.com/narwassco/postgis2mbtiles.git \
-    && cd postgis2geojson \
+    && cd postgis2mbtiles \
     && npm install
 
 # Copy Config file to container

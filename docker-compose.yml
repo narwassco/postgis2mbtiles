@@ -2,7 +2,7 @@ version: '2'
 services:
   nodejs:
     image: narwassco/postgis2mbtiles
-    build: .
+    # build: .
     env_file:
       - ./app-docker.env
     volumes:
