@@ -12,6 +12,9 @@ After using this module to extract your data, you can upload GeoJSON data to [Ma
 
 Then, you can create style file for your vector tile and enjoy it!
 
+## Archived
+This module has been archived to [watergis/postgis2mbtiles](https://github.com/watergis/postgis2mbtiles) package.
+
 ## Preparation
 This module uses [`tippecanoe`](https://github.com/mapbox/tippecanoe) to convert geojson files to mbtiles. Please make sure to install it before running.
 
